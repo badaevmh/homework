@@ -1,4 +1,23 @@
-/* ЗАДАНИЕ 4 Написать цикл, который создаёт массив промисов, внутри каждого промиса происходит обращение к
-ресурсу (https://jsonplaceholder.typicode.com/users/number), где вместо number подставляется число от 1
-до 10, в итоге должно получиться 10 промисов. Следует дождаться выполнения загрузки всеми
-промисами и далее вывести массив загруженных данных. */
+'use strict';
+
+const url = 'https://jsonplaceholder.typicode.com/users/'; 
+const promiseArr = [];
+
+for (let i = 0; i < 10; i++) {
+    promiseArr[i] = new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url + (i + 1));
+        xhr.onload = function ()  {
+            resolve(JSON.parse(xhr.responseText))
+        };
+        xhr.onerror = () => reject(xhr.statusText);
+        xhr.send();
+    });
+};
+
+for (const promise of promiseArr) {
+    promise.then((result) => {
+        console.log(result);
+    })
+}
+
